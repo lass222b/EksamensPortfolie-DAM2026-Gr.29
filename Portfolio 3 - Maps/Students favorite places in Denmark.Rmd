@@ -1,0 +1,177 @@
+---
+title: "Students favorite places in Denmark"
+author: "Astrid Hedegaard, Katrine Foldager, Lasse Axel Lundgreen"
+date: "2026-05-13"
+
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(leaflet)
+library(tidyverse)
+library(googlesheets4)
+library(htmlwidgets)
+library(htmltools)
+```
+
+# Introduction
+In this portfolio project, we are analyzing a dataset containing a list of the students of DAM spring 2026 favorite places in Denmark.
+
+We will be creating interactive maps using Leaflet, to answer the following research question:
+**Are there any trends in the students of DAM spring 2026 favorite places in Denmark?**
+
+Furthermore this project demonstrates:
+- How to create interactive maps with Leaflet, as well as adding esri layers. 
+- How to import data from Google Sheets.
+- Create marker clustering and popups with descriptions.
+- Saving Leaflet maps as HTML files.
+
+## Task 1: Creating a basic Leaflet map og Denmark
+
+```{r danmap, include=TRUE}
+l_dk <- leaflet() %>%
+  setView(10.85089, 55.2339084, zoom = 6) %>%
+  addTiles()
+
+esri <- grep("^Esri", names(providers), value = TRUE)
+
+for (provider in esri) {
+  l_dk <- l_dk %>%
+   addProviderTiles(
+      provider = provider,
+      group = provider
+    )
+}
+  
+DANmap <- l_dk %>%
+  addLayersControl(
+    baseGroups = esri,
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+DANmap
+```
+
+## Task 2: Importing data from Google Sheets
+
+```{r data, include=TRUE}
+# Uncomment if authentication issues occur
+# gs4_deauth()
+
+places <- read_sheet(
+  "https://docs.google.com/spreadsheets/d/1PlxsPElZML8LZKyXbqdAYeQCDIvDps2McZx1cTVWSzI/edit#gid=124710918",
+  col_types = "cccnncnc",
+  range = "DAM2026"
+)
+
+glimpse(places)
+```
+### Question
+**Are the Latitude and Longitude columns present and numeric?**
+Yes, both columns are present and contain decimal degree coordinates.
+
+## Task 3: Creating a map with individual plots
+
+```{r Favorite_places, include=TRUE}
+Favorite_places <- leaflet() %>%
+  addTiles()
+  
+esri <- grep("^Esri", names(providers), value = TRUE)
+
+for (provider in esri) {
+  Favorite_places <- Favorite_places %>%
+   addProviderTiles(
+      provider = provider,
+      group = provider
+    )
+}
+  
+Favorite_places <- Favorite_places %>%
+  addMarkers(
+    lng = places$Longitude,
+    lat = places$Latitude,
+    popup = paste(
+     "<strong>Place:</strong>",
+      places$Placename,
+      "<br><strong>Description:</strong>",
+      places$Description,
+      "<br><strong>Type:</strong>",
+      places$Type
+    ),
+    group = "Favorite Places"
+  ) %>%
+  addLayersControl(
+    baseGroups = esri,
+    overlayGroups = "Favorite Places",
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+Favorite_places
+```
+
+## Task 3: Creating a map with clustered plots
+
+```{r clustering, include=TRUE}
+Favorite_places_cluster <- leaflet() %>%
+  addTiles()
+
+esri <- grep("^Esri", names(providers), value = TRUE)
+
+for (provider in esri) {
+  Favorite_places_cluster <- Favorite_places_cluster %>%
+   addProviderTiles(
+      provider = provider,
+      group = provider
+    )
+}
+  
+Favorite_places_cluster <- Favorite_places_cluster %>%
+  addMarkers(
+    lng = places$Longitude,
+    lat = places$Latitude,
+    clusterOptions = markerClusterOptions(),
+    popup = paste(
+      "<strong>Place:</strong>",
+      places$Placename,
+      "<br><strong>Description:</strong>",
+      places$Description,
+      "<br><strong>Type:</strong>",
+      places$Type
+    ),
+    group = "Favorite Places"
+  ) %>%
+  addLayersControl(
+    baseGroups = esri,
+    overlayGroups = "Favorite Places",
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+Favorite_places_cluster
+```
+
+## Task 4: Saving the maps as HTML
+
+```{r save, include=TRUE}
+saveWidget(Favorite_places, "Favorite_places.html", selfcontained = TRUE)
+
+saveWidget(Favorite_places_cluster, "Favorite_places_cluster.html", selfcontained = TRUE)
+```
+
+# Reflection: Pro's and cons for each map
+**Without Clustering**
+- **Pros:** Easier to immediately identify exact locations and overall trends.
+- **Cons:** Can feel visually cluttered and overwhelming.
+
+**With Clustering**
+- **Pros:** Visually cleaner and easier to navigate.
+- **Cons:** Requires zooming for detailed inspection
+
+# Conclusion
+See our portfolio document for our conclusion on our research question.
