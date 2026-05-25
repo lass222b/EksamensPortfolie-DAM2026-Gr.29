@@ -1,0 +1,244 @@
+---
+title: "Sexual crimes before and after MeToo"
+author: "Astrid Hedegaard Lund, Katrine Foldager, Lasse Axel Lundgreen"
+date: "2026-05-14"
+
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(scales)
+library(dplyr)
+```
+
+# Introduction
+This Rmarkdown file and subsequent HTML file, are to be seen as an overview of the creation of our visual products for our final project. These visualizations are included in the written project and any contextualizing analysis to our chosen topic will be done in the same document.
+Shown below is only the coding behind said visualizations.
+
+## Graph 1: Sexual crimes in total in Denmark, 1995-2025
+
+### Step by step - **This counts for graphs 1-4 in this Rmarkdown**:
+1. Loading the relevant csv data file.
+2. Checking that the data was loaded correctly.
+3. Creating graphs using ggplot to visualize our data.
+
+```{r Sexual crimes in total, include=TRUE}
+sexcrimes_total <- read_csv2("data/sexcrimes_total.csv")
+
+class(sexcrimes_total)
+
+glimpse(sexcrimes_total)
+
+head(sexcrimes_total)
+
+graph_1 <- sexcrimes_total %>% 
+  ggplot(aes(x = Year)) +
+  geom_line(aes(y = Reported, color = "Reported"), linewidth = 1.5) +
+  geom_line(aes(y = Convicted, color = "Convicted"),linewidth = 1.5) +
+  scale_color_manual(values = c(
+    "Reported" = "plum3",
+    "Convicted" = "tomato2")) +
+  scale_x_continuous(breaks = seq(1996, 2026, 3))+
+  scale_y_continuous(breaks = seq(0, 10000, 1000))+
+  theme_light () +
+  theme(text = element_text(size = 14),
+        axis.line = element_line(linewidth = 1.2, colour = "black"),
+        panel.grid.minor = element_line(linewidth = 0.3, colour = "white"),
+        axis.title.x = element_text(face = "bold"),
+        axis.title.y = element_text(face = "bold")) +
+  labs(y = "No. of cases", color = "",
+       title = "Sexual crimes in total in Denmark",
+       subtitle = "1995-2025",
+       caption = "Data from Danmarks Statistik - www.dst.dk")
+```
+
+## Graph 2: Rape cases in total in Denmark, 1995-2025
+
+```{r Rape cases in total, include=TRUE}
+rapecases <- read_csv2("data/rape.csv")
+
+class(rapecases)
+
+glimpse(rapecases)
+
+head(rapecases)
+
+graph_2 <- rapecases %>% 
+  ggplot(aes(x = Year)) +
+  geom_line(aes(y = Reported, color = "Reported"), linewidth = 1.5) +
+  geom_line(aes(y = Convicted, color = "Convicted"),linewidth = 1.5) +
+  scale_color_manual(values = c(
+    "Reported" = "plum3",
+    "Convicted" = "tomato2")) +
+  scale_x_continuous(breaks = seq(1996, 2026, 3))+
+  scale_y_continuous(breaks = seq(0, 2000, 500))+
+  theme_light () +
+  theme(text = element_text(size = 14),
+        axis.line = element_line(linewidth = 1.2, colour = "black"),
+        panel.grid.minor = element_line(linewidth = 0.3, colour = "white"),
+        axis.title.x = element_text(face = "bold"),
+        axis.title.y = element_text(face = "bold")) +
+  labs(y = "No. of cases", color = "",
+       title = "Rape cases in Denmark",
+       subtitle = "1995-2025",
+       caption = "Data from Danmarks Statistik - www.dst.dk")
+```
+
+## Graph 3: Cases of unwanted touch in total in Denmark, 1995-2025
+
+```{r Cases of unwanted touch in total, include=TRUE}
+unwanted_touch <- read_csv2("data/unwanted_touch.csv")
+
+class(unwanted_touch)
+
+glimpse(unwanted_touch)
+
+head(unwanted_touch)
+
+graph_3 <- unwanted_touch %>% 
+  ggplot(aes(x = Year)) +
+  geom_line(aes(y = Reported, color = "Reported"), linewidth = 1.5) +
+  geom_line(aes(y = Convicted, color = "Convicted"),linewidth = 1.5) +
+  scale_color_manual(values = c(
+    "Reported" = "plum3",
+    "Convicted" = "tomato2")) +
+  scale_x_continuous(breaks = seq(1996, 2026, 3))+
+  scale_y_continuous(breaks = seq(0, 1250, 250))+
+  theme_light () +
+  theme(text = element_text(size = 14),
+        axis.line = element_line(linewidth = 1.2, colour = "black"),
+        panel.grid.minor = element_line(linewidth = 0.3, colour = "white"),
+        axis.title.x = element_text(face = "bold"),
+        axis.title.y = element_text(face = "bold")) +
+  labs(y = "No. of cases", color = "",
+       title = "Cases of unwanted touch in Denmark",
+       subtitle = "1995-2025",
+       caption = "Data from Danmarks Statistik - www.dst.dk")
+```
+
+## Graph 4: Crime cases in total in Denmark, 1995-2025
+
+```{r Crime cases in total, include=TRUE}
+crimes_overall <- read_csv2("data/crimes_overall.csv")
+
+class(crimes_overall)
+
+glimpse(crimes_overall)
+
+head(crimes_overall)
+
+graph_4 <- crimes_overall %>% 
+  ggplot(aes(x = Year)) +
+  geom_line(aes(y = Reported, color = "Reported"), linewidth = 1.5) +
+  geom_line(aes(y = Convicted, color = "Convicted"),linewidth = 1.5) +
+  scale_color_manual(values = c(
+    "Reported" = "plum3",
+    "Convicted" = "tomato2")) +
+  scale_x_continuous(breaks = seq(1996, 2026, 3))+
+  scale_y_continuous(breaks = seq(100000, 550000, 50000))+
+  theme_light () +
+  theme(text = element_text(size = 14),
+        axis.line = element_line(linewidth = 1.2, colour = "black"),
+        panel.grid.minor = element_line(linewidth = 0.3, colour = "white"),
+        axis.title.x = element_text(face = "bold"),
+        axis.title.y = element_text(face = "bold")) +
+  labs(y = "No. of cases", 
+       color = "",
+       title = "All crime cases in total in Denmark",
+       subtitle = "1995-2025",
+       caption = "Data from Danmarks Statistik - www.dst.dk")
+```
+
+## Graph 5: Comparing the conviction rates, 1995-2025
+
+### Step by step:
+1a. Merging the four individual data sets used for graphs 1-4, into one data set.
+1b. Creating a new column for all data sets that calculate the conviction rates in decimals.
+2. Checking that the merging of the data sets, and creation of the new column loads correctly.
+3. Creating a graph using ggplot to visualize and compare the conviction rates for each original data set.
+
+```{r Conviction rates, include=TRUE}
+conviction_rates <- bind_rows(
+  sexcrimes_total %>% 
+    mutate(Conviction_rate = Convicted / Reported * 100,
+           Dataset = "Sex crimes in total"),
+  rapecases %>% 
+    mutate(Conviction_rate = Convicted / Reported * 100,
+           Dataset = "Rape cases"),
+  unwanted_touch %>% 
+    mutate(Conviction_rate = Convicted / Reported * 100,
+           Dataset = "Unwanted touch"),
+  crimes_overall %>% 
+    mutate(Conviction_rate = Convicted / Reported * 100,
+           Dataset = "All crime cases"))
+
+class(conviction_rates)
+
+glimpse(conviction_rates)
+
+head(conviction_rates)
+
+graph_5 <- conviction_rates %>% 
+  ggplot(aes(x = Year, y = Conviction_rate, color = Dataset)) +
+  geom_line(linewidth = 1.5) +
+  scale_color_manual(values = c(
+    "Sex crimes in total" = "springgreen3",
+    "Rape cases" = "steelblue3",
+    "Unwanted touch" = "gold1",
+    "All crime cases" = "darkorange1")) +
+  scale_x_continuous(breaks = seq(1996, 2026, 3))+
+  scale_y_continuous(breaks = seq(10, 80, 10))+
+  theme_light () +
+  theme(text = element_text(size = 14),
+        axis.line = element_line(linewidth = 1.2, colour = "black"),
+        panel.grid.minor = element_line(linewidth = 0.3, colour = "white"),
+        axis.title.x = element_text(face = "bold"),
+        axis.title.y = element_text(face = "bold")) +
+  labs(y = "Conviction rate (%)",
+       color = "",
+       title = "Conviction rates across certain crimes",
+       subtitle = "1995–2025",
+       caption = "Data from Danmarks Statistik - www.dst.dk")
+```
+
+## Saving the graphs as .png files
+```{r Saving the graphs, include=TRUE}
+ggsave("sexcrimes_total.png",
+  plot = graph_1,
+  width = 12,
+  height = 7,
+  dpi = 300)
+
+ggsave("rapecases.png",
+  plot = graph_2,
+  width = 12,
+  height = 7,
+  dpi = 300)
+
+ggsave("unwanted_touch.png",
+  plot = graph_3,
+  width = 12,
+  height = 7,
+  dpi = 300)
+
+ggsave("crimes_overall.png",
+  plot = graph_4,
+  width = 12,
+  height = 7,
+  dpi = 300)
+
+ggsave("conviction_rates.png",
+  plot = graph_5,
+  width = 12,
+  height = 7,
+  dpi = 300)
+```
